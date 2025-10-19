@@ -1,0 +1,48 @@
+@startuml
+title SynchronizedExample（同期あり）シーケンス図
+
+actor Main
+participant "SynchronizedExample" as App
+participant "Thread-1" as T1
+participant "Thread-2" as T2
+
+Main -> App : runTest(true)
+activate App
+App -> T1 : start()
+App -> T2 : start()
+
+par スレッド1の実行
+    activate T1
+    T1 -> App : increment(useSync=true, "スレッド1")
+    activate App
+    App -> App : synchronizedブロック開始（ロック取得）
+    loop 10000回
+        App -> App : count++
+        note right
+          countを1増加
+          （スレッド2は待機中）
+        end note
+    end
+    App -> App : synchronizedブロック終了（ロック解放）
+    deactivate App
+    T1 -> App : 終了
+    deactivate T1
+end
+
+par スレッド2の実行
+    activate T2
+    T2 -> App : increment(useSync=true, "スレッド2")
+    activate App
+    App -> App : synchronizedブロック開始（スレッド1終了後に取得）
+    loop 10000回
+        App -> App : count++
+    end
+    App -> App : synchronizedブロック終了
+    deactivate App
+    T2 -> App : 終了
+    deactivate T2
+end
+
+App -> Main : 最終結果(count=20000)
+deactivate App
+@enduml

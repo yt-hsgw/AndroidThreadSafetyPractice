@@ -1,0 +1,31 @@
+@startuml
+title VolatileExample（メモリ可視性の流れ）
+
+actor Main
+participant "メインメモリ" as Memory
+participant "スレッドt" as T
+
+Main -> Memory : running = true（初期化）
+Main -> T : スレッドt.start()
+
+activate T
+T -> Memory : runningを読み取り（true）
+loop while(running)
+    T -> Memory : runningを読み込み続ける
+end
+
+Main -> Main : Thread.sleep(1000)
+Main -> Memory : running = false（書き込み）
+note right of Memory
+  volatileにより即座に他スレッドへ反映
+end note
+
+T -> Memory : runningを再読み込み
+T <-- Memory : falseを検知
+T -> T : whileループを抜ける
+T -> Main : "スレッド停止" 出力
+
+Main -> Main : "フラグをfalseに変更" 出力
+deactivate T
+
+@enduml

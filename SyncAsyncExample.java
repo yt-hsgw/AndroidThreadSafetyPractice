@@ -1,8 +1,8 @@
 public class SyncAsyncExample {
 
     public static void main(String[] args) {
-        // System.out.println("=== 同期処理 ===");
-        // doTaskSync();
+        System.out.println("=== 同期処理 ===");
+        doTaskSync();
 
         System.out.println("\n=== 非同期処理 ===");
         doTaskAsync();

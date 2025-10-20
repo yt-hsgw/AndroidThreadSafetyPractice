@@ -1,0 +1,41 @@
+@startuml
+title AtomicInteger.incrementAndGet() のシーケンス図
+
+actor Main
+participant "メインメモリ\n(count)" as Memory
+participant "スレッドt1" as T1
+participant "スレッドt2" as T2
+
+Main -> T1 : start()
+Main -> T2 : start()
+
+par 並列加算処理
+    loop 10000回
+        T1 -> Memory : 現在値取得（get）
+        T1 -> Memory : CAS(旧値→新値) 試行
+        alt 成功
+            Memory -> T1 : 更新完了
+        else 失敗（他スレッドが更新）
+            T1 -> Memory : 再試行（リトライ）
+        end
+    end
+
+    loop 10000回
+        T2 -> Memory : 現在値取得（get）
+        T2 -> Memory : CAS(旧値→新値) 試行
+        alt 成功
+            Memory -> T2 : 更新完了
+        else 失敗（他スレッドが更新）
+            T2 -> Memory : 再試行（リトライ）
+        end
+    end
+end
+
+T1 -> Main : 終了
+T2 -> Main : 終了
+
+Main -> Memory : count.get()
+Memory --> Main : 20000
+Main -> Main : "最終結果: 20000" 出力
+
+@enduml

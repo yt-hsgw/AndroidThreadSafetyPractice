@@ -1,1 +1,4 @@
 # AndroidThreadSafetyPractice
+Javaを使ったAndroidアプリのスレッドセーフ設計と非同期処理の学習プロジェクト。
+
+レースコンディション、synchronized、CompletableFuture、UIスレッドでの安全なデータ更新、並行処理のテストパターンなどを学ぶリポジトリ。

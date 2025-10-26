@@ -1,4 +1,4 @@
-package com.example.androidthreadsafetypractice;
+package com.example.androidthreadsafetypractice.model;
 
 import androidx.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;

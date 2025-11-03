@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.androidthreadsafetypractice.model.User;
 import com.example.androidthreadsafetypractice.network.ApiService;
+import com.example.androidthreadsafetypractice.network.RetrofitClient;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,16 +29,10 @@ public class RetrofitViewModel extends ViewModel {
     private final MutableLiveData<String> result = new MutableLiveData<>();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private final ApiService service;
+    private final ApiService service = RetrofitClient.getApiService();
 
     // コンストラクタでRetrofitとApiServiceを初期化
-    public RetrofitViewModel() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        service = retrofit.create(ApiService.class);
-    }
+    public RetrofitViewModel() {}
 
     // LiveDataを外部に公開
     public LiveData<String> getResult() {

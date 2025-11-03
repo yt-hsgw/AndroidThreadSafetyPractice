@@ -16,9 +16,12 @@ import com.example.androidthreadsafetypractice.viewmodel.ProducerConsumerViewMod
 import com.example.androidthreadsafetypractice.viewmodel.RetrofitViewModel;
 import com.example.androidthreadsafetypractice.viewmodel.ThreadViewModel;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textView1;
@@ -72,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        try {
+            FutureTimeOut();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void FutureCancel() throws InterruptedException {
@@ -91,5 +100,23 @@ public class MainActivity extends AppCompatActivity {
         future.cancel(true); // タスク中断要求
         System.out.println("キャンセル要求を送信しました。");
 
+    }
+
+    private void FutureTimeOut() throws InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<String> future = executor.submit(() -> {
+            Thread.sleep(10000);
+            return "完了";
+        });
+
+        try {
+            String result = future.get(7, TimeUnit.SECONDS); // タイムアウト1秒
+            System.out.println(result);
+        } catch (TimeoutException e) {
+            System.err.println("処理がタイムアウトしました");
+            future.cancel(true);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

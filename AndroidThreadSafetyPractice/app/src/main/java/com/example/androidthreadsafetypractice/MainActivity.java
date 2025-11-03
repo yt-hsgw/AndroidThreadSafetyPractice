@@ -16,6 +16,10 @@ import com.example.androidthreadsafetypractice.viewmodel.ProducerConsumerViewMod
 import com.example.androidthreadsafetypractice.viewmodel.RetrofitViewModel;
 import com.example.androidthreadsafetypractice.viewmodel.ThreadViewModel;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class MainActivity extends AppCompatActivity {
     private TextView textView1;
     private TextView textView2;
@@ -62,5 +66,30 @@ public class MainActivity extends AppCompatActivity {
         FlowViewModel flowVM = new ViewModelProvider(this).get(FlowViewModel.class);
         flowVM.getResult().observe(this, result -> textView5.setText(result));
         flowVM.loadData();
+
+        try {
+            FutureCancel();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void FutureCancel() throws InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<?> future = executor.submit(() -> {
+            for (int i = 0; i < 10; i++) {
+                System.out.println("Working... " + i);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        Thread.sleep(2000);
+        future.cancel(true); // タスク中断要求
+        System.out.println("キャンセル要求を送信しました。");
+
     }
 }

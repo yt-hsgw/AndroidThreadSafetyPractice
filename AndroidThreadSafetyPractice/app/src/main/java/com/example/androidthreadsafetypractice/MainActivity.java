@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.androidthreadsafetypractice.viewmodel.ExecutorViewModel;
+import com.example.androidthreadsafetypractice.viewmodel.ProducerConsumerViewModel;
 import com.example.androidthreadsafetypractice.viewmodel.RetrofitViewModel;
 import com.example.androidthreadsafetypractice.viewmodel.ThreadViewModel;
 
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView1;
     private TextView textView2;
     private TextView textView3;
+    private TextView textView4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         textView1 = findViewById(R.id.textView1);
         textView2 = findViewById(R.id.textView2);
         textView3 = findViewById(R.id.textView3);
+        textView4 = findViewById(R.id.textView4);
 
         // Thread + ViewModel
         ThreadViewModel threadVM = new ViewModelProvider(this).get(ThreadViewModel.class);
@@ -47,5 +50,11 @@ public class MainActivity extends AppCompatActivity {
         RetrofitViewModel retrofitVM = new ViewModelProvider(this).get(RetrofitViewModel.class);
         retrofitVM.getResult().observe(this, result -> textView3.setText(result));
         retrofitVM.fetchUsers();
+
+        // ProducerConsumer + ViewModel
+        ProducerConsumerViewModel producerConsumerVM = new ViewModelProvider(this).get(ProducerConsumerViewModel.class);
+        producerConsumerVM.getResult().observe(this, result -> textView4.setText(result));
+        producerConsumerVM.loadData();
+
     }
 }
